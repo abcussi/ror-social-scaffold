@@ -9,4 +9,9 @@ class User < ApplicationRecord
   has_many :posts
   has_many :comments, dependent: :destroy
   has_many :likes, dependent: :destroy
+  
+  has_many :friendships
+  has_many :request, :through => :friendships
+  has_many :inverse_friendships, :class_name => "Friendship", :foreign_key => "request_id"
+  has_many :inverse_friends, :through => inverse_friendships, :source => user 
 end
