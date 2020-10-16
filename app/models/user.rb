@@ -15,4 +15,3 @@ class User < ApplicationRecord
   has_many :friends_requester, through: :friendships_requester, source: 'requested'
   has_many :friends_requested, through: :friendships_requested, source: 'requester'
 end
-end

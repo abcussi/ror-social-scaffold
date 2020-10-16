@@ -1,5 +1,12 @@
-<section class="users-section">
+<!--<section class="users-section">
   <ul class="users-list">
     <%= render @users %>
   </ul>
 </section>
+-->
+<%= User.all.each @user do |user|%>
+<span>name of the users:<%@user.name%></span>
+<span class="profile-link">
+    <%= link_to 'See Profile',  user_path(user), class: 'profile-link' %>
+  </span>
+<% end%>
