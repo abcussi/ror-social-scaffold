@@ -12,6 +12,7 @@ class FriendshipsController < ApplicationController
     else
       format.html{render 'new'}
     end
+    end
   end
 
   private 
