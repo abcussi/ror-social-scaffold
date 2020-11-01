@@ -26,15 +26,29 @@ class User < ApplicationRecord
   has_many :pending_requests, -> { merge(Friendship.not_friends) }, through: :friend_sent, source: :request
   has_many :received_requests, -> { merge(Friendship.not_friends) }, through: :friend_request, source: :user
 
+  def friends_and_own_posts
+    myfriends = friends
+    our_posts = []
+    myfriends.each do |f|
+      f.posts.each do |p|
+        our_posts << p
+      end
+    end
 
+    posts.each do |p|
+      our_posts << p
+    end
 
-
-
-
-  def friends
-    friends_array = friendships.map { |friendship| friendship.request if friendship.confirmed }
-    friends_array += inverse_friendships.map { |friendship| friendship.user if friendship.confirmed }
-    friends_array.compact
+    our_posts
   end
+  
+
+
+
+  # def friends
+  #   friends_array = friendships.map { |friendship| friendship.request if friendship.confirmed }
+  #   friends_array += inverse_friendships.map { |friendship| friendship.user if friendship.confirmed }
+  #   friends_array.compact
+  # end
 
 end
