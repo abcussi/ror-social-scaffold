@@ -29,6 +29,7 @@ class User < ApplicationRecord
   def friends_and_own_posts
     myfriends = friends
     our_posts = []
+    return unless myfriends.exists?
     myfriends.each do |f|
       f.posts.each do |p|
         our_posts << p
