@@ -1,64 +1,56 @@
 class FriendshipsController < ApplicationController
-  include ApplicationHelper
+  before_action :find_user, only: %i[create accept deny destroy]
 
-  def create
-    return if current_user.id == params[:user_id] # Disallow the ability to send yourself a friend request
-    # Disallow the ability to send friend request more than once to same person
-    return if friend_request_sent?(User.find(params[:user_id]))
-    # Disallow the ability to send friend request to someone who already sent you one
-    return if friend_request_recieved?(User.find(params[:user_id]))
+  def index
+    @users = User.where.not(id: current_user).where.not(id: current_user.friends)
+    @user = current_user
+    @friends = @user.friends
+    @pending_friends = @user.pending_friends
+    @requested_friends = @user.requested_friends
+  end
 
-    @user = User.find(params[:user_id])
-    @friendship = current_user.friend_sent.build(request_id: params[:user_id])
-    if @friendship.save
-      flash[:success] = 'Friend Request Sent!'
+  def create 
+    if @user_one !=  @friend 
+      is_friendship = current_user.friendships.exists?(friend: @friend) 
+      if !is_friendship 
+        current_user.friendships.create(friend: @friend, status: 'pending')
+        @friend.friendships.create(friend: @user_one, status: 'requested')
+        flash[:success] = "Friend request has been sent to #{@friend.first_name} #{@friend.last_name}."
+        redirect_to friends_path
+      else
+        flash[:success] = "Friend request already sent"
+        redirect_to friends_path
+      end
+
     else
-      flash[:danger] = 'Friend Request Failed!'
+      flash[:danger] = "You can't friend yourself"
+      redirect_to friends_path
     end
-    redirect_back(fallback_location: root_path)
   end
 
-  def accept_friend
-    @friendship = Friendship.find_by(user_id: params[:user_id], request_id: current_user.id, status: false)
-    return unless @friendship # return if no record is found
-
-    @friendship.status = true
-    if @friendship.save
-      flash[:success] = 'Friend Request Accepted!'
-      @friendship2 = current_user.friend_sent.build(request_id: params[:user_id], status: true)
-      @friendship2.save
-    else
-      flash[:danger] = 'Friend Request could not be accepted!'
-    end
-    redirect_back(fallback_location: root_path)
+  def accept
+    Friendship.accept(@user_one, @friend)
+    flash[:success] = "Friend request from #{@friend.email} has been accepted."
+    redirect_to friends_path
   end
 
-  def decline_friend
-    @friendship = Friendship.find_by(user_id: params[:user_id], request_id: current_user.id, status: false)
-    return unless @friendship # return if no record is found
-
-    @friendship.destroy
-    flash[:success] = 'Friend Request Declined!'
-    redirect_back(fallback_location: root_path)
+  def deny
+    Friendship.breakup(@user_one, @friend)
+    flash[:danger] = "Friend request from #{@friend.email} has been declined."
+    redirect_to friends_path
   end
 
-  # def new
-  #   @friendship = Friendship.new
-  # end
+  def destroy
+    Friendship.breakup(@user_one, @friend)
+    flash[:danger] = "#{@friend.email} has been removed from your friends list."
+    redirect_to friends_path
+  end
 
-  # def create
-  #  @friendship = Friendship.new(friendship_params)
-  #  respond_to do |format|
-  #   if @friendship.save
-  #     format.html {redirect_to @friendship}
-  #   else
-  #     format.html{render 'new'}
-  #   end
-  #   end
-  # end
+  private
 
-  # private 
-  # def friendship_params
-  #   params.require(:friendship).permit(:user_id, :request_id, :status)
-  # end
+  def find_user
+    @user_one = current_user
+    @friend = User.find(params[:id])
+  end
+  
 end
