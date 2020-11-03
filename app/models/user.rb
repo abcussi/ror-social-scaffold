@@ -10,38 +10,16 @@ class User < ApplicationRecord
   has_many :comments, dependent: :destroy
   has_many :likes, dependent: :destroy
 
-  # has_many :friendships_requester, foreign_key: :user_id
-  # has_many :friendships_requested, foreign_key: :request_id
-  # has_many :friends_requester, through: :friendships_requester, source: 'requested'
-  # has_many :friends_requested, through: :friendships_requested, source: 'requester'
+  has_many :friendships
+  has_many :accepted_friendships, -> { where status: true }, class_name: 'Friendship'
+  has_many :requested_friendships, -> { where status: nil }, class_name: 'Friendship'
+  has_many :pending_friendships, -> { where status: nil }, class_name: 'Friendship'
+  has_many :friends, through: :accepted_friendships
+  has_many :requested_friends, through: :requested_friendships, source: :user
+  has_many :pending_friends, through: :pending_friendships, source: :request
 
-  #has_many :friendships
-  #has_many :inverse_friendships, class_name: 'Friendship', foreign_key: 'request_id'
-
-  # Array of users who are already friends
-
-  has_many :friend_sent, class_name: 'Friendship', foreign_key: 'user_id', inverse_of: 'user', dependent: :destroy
-  has_many :friend_request, class_name: 'Friendship', foreign_key: 'request_id', inverse_of: 'request', dependent: :destroy
-  has_many :friends, -> { merge(Friendship.friends) }, through: :friend_sent, source: :request
-  has_many :pending_requests, -> { merge(Friendship.not_friends) }, through: :friend_sent, source: :request
-  has_many :received_requests, -> { merge(Friendship.not_friends) }, through: :friend_request, source: :user
-
-  def friends_and_own_posts
-    myfriends = friends
-    our_posts = []
-    return unless myfriends.exists?
-    myfriends.each do |f|
-      f.posts.each do |p|
-        our_posts << p
-      end
-    end
-
-    posts.each do |p|
-      our_posts << p
-    end
-
-    our_posts
+  def user_friends_post
+    Post.where(user_id: self).includes([:user]).order('created_at DESC').includes([:image_attachment]).includes([:likes]) + Post.where(user_id: friends).includes([:user]).order('created_at DESC').includes([:image_attachment]).includes([:likes])
   end
-  
 
 end
