@@ -14,5 +14,5 @@ class User < ApplicationRecord
   has_many :friendships_requested, foreign_key: :request_id
   has_many :friends_requester, through: :friendships_requester, source: 'requested'
   has_many :friends_requested, through: :friendships_requested, source: 'requester'
-end
+
 end
