@@ -1,5 +1,5 @@
 module FriendshipsHelper
-    def friends?(requested_id)
-        #if Friendship.find_by
-    end
+  def friend_request_sent?(user)
+    current_user.friend_sent.exists?(request_id: user.id, status:nil)
+  end
 end
