@@ -29,4 +29,20 @@ class FriendshipsController < ApplicationController
       flash[:danger] = 'Friend Request Failed'
     end
   end
+
+  def accept_friend
+    @friendship = Friendship.find_by(user_id: params[:user_id], request_id:current_user.id,status:nil)
+    return unless @friendship
+    @friendship.status =true
+    if @friendship.save
+      flash[:success] = 'Friend request accepted'
+      @friendship2 = current_user.friend_sent.build(
+        request_id: params[:user_id], status:true
+      )
+    else
+      flash[:danger] = 'Friend request could not be accepted'
+    end
+    redirect_back(fallback_location: root_path)
+  end
+
 end
