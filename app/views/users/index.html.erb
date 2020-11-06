@@ -15,7 +15,19 @@
     <% end %>
   </ul>
   <h2>Pending Friends</h2>
+  <ul>
   <% @friend_sent.each do |req| %>
-    <%= req.request.name %>
+    <li>
+      <%= req.request.name %>
+    </li>
   <% end %>
+  </ul>
+  <h2>Friend Requests</h2>
+  <ul>
+    <% @friend_requests.each do |req| %>
+      <li>
+        <%= req.user.name %>
+      </li>
+    <% end %>
+  </ul>
  
