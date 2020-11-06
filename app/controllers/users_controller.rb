@@ -11,7 +11,7 @@ class UsersController < ApplicationController
     end
     #@users = User.all
     @users_list = users_list
-    @friends = current_user.friends
+    #@friends = current_user.friends
     #@pending_requests = current_user.pending_requests
     #@friend_requests = current_user.received_requests
     @friend_requests = current_user.friend_request

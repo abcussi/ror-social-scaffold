@@ -17,7 +17,7 @@ class User < ApplicationRecord
   has_many :friend_sent, class_name: 'Friendship', foreign_key: 'user_id', inverse_of: 'user', dependent: :destroy
   has_many :friend_request, class_name: 'Friendship', foreign_key: 'request_id',
                             inverse_of: 'request', dependent: :destroy
-  has_many :friends, -> { merge(Friendship.friends) }, through: :friend_sent, source: :request
+  #has_many :friends, -> { merge(Friendship.friends) }, through: :friend_sent, source: :request
   has_many :pending_requests, -> { merge(Friendship.not_friends) }, through: :friend_sent, source: :request
   has_many :recieved_requests, -> { merge(Friendship.not_friends) }, through: :friend_request, source: :user
 
