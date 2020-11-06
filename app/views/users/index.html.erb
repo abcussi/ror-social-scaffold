@@ -16,18 +16,27 @@
   </ul>
   <h2>Pending Friends</h2>
   <ul>
-  <% @friend_sent.each do |req| %>
-    <li>
-      <%= req.request.name %>
-    </li>
+  <% if !@friend_sent.empty? %>
+    <% @friend_sent.each do |req| %>
+      <li>
+        <%= req.request.name %>
+      </li>
+    <% end %>
+  <% else %>
+     <p>No pending requests</p>
   <% end %>
+
   </ul>
   <h2>Friend Requests</h2>
   <ul>
-    <% @friend_requests.each do |req| %>
-      <li>
-        <%= req.user.name %>
-      </li>
+    <% if !@friend_requests.empty? %>
+      <% @friend_requests.each do |req| %>
+        <li>
+          <%= req.user.name %>
+        </li>
+      <% end %>
+    <% else %>
+      <p>No friend requests</p>
     <% end %>
   </ul>
  
