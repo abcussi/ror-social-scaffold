@@ -2,6 +2,10 @@
    <%= user.name %>
    <span class="profile-link">
    <%= link_to 'See Profile',  user_path(user), class: 'profile-link' %>
-   <%= link_to 'Add Friend',  friendships_path(:request_id=>user), :method => :post %>
+   <%= link_to 'Send Friend Request',  friendships_path(:request_id=>user), :method => :post %>
   </span>
 </li>
+<h2>Pending friends</h2>
+<% @pending_requests.each do |user| %>
+  <%= user.email %>
+<% end %> 

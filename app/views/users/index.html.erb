@@ -2,6 +2,20 @@
   <b>Name:</b> <%= current_user.name %>
   <p>Other users</p>
   <ul class="users-list">
-    <%= render @users_list %>
+    <!--<%= render @users_list %>-->
+    <% @users_list.each do |user|  %>
+      <li>
+        <%= user.name %>
+        <span class="profile-link">
+        <%= link_to 'See Profile',  user_path(user), class: 'profile-link' %>
+        <%= link_to 'Send Friend Request',  friendships_path(:request_id=>user), :method => :post %>
+        </span>
+      </li>
+
+    <% end %>
   </ul>
-</section>
+  <h2>Pending Friends</h2>
+  <% @friend_sent.each do |req| %>
+    <%= req.request.name %>
+  <% end %>
+ 
