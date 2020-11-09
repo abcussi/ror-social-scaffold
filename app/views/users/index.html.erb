@@ -6,33 +6,10 @@
   </ul>
   <h2>Pending Friends</h2>
   <ul>
-  <% if !@friend_sent.empty? %>
-    <% @friend_sent.each do |req| %>
-      <li>
-        <%= req.request.name %> 
-      </li>
-    <% end %>
-  <% else %>
-     <p>No pending requests</p>
+  <% @friend_sent.each do |req| %>
+    <li>
+    <%= req.request.name %>
+    </li>
   <% end %>
-
-  </ul>
-  <h2>Friend Requests</h2>
-  <ul>
-    <% if !@friend_requests.empty? %>
-      <% @friend_requests.each do |req| %>
-        <li>
-            <%= req.user.name %>
-            <%= link_to accept_friend_user_friendships_path(req) do %>
-              <button type="button" class="btn btn-accept text-white font-weight-bold"> Accept</button>
-            <% end %>
-            <%= link_to decline_friend_user_friendships_path(req) do %>
-              <button type="button" class="btn btn-decline text-white font-weight-bold"> Decline</button>
-            <% end %>
-        </li>
-      <% end %>
-    <% else %>
-      <p>No friend requests</p>
-    <% end %>
   </ul>
  
